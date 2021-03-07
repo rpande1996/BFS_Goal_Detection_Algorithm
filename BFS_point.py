@@ -111,5 +111,53 @@ for i in range(obs_map.shape[0]):
             obs_map.shape[0] - i, j):
             obs_map[i, j] = 1
 
+def move_up(i, j):
+    if obs_map[i - 1, j] != 1:
+        return (i - 1, j)
 
+
+def move_down(i, j):
+    if obs_map[i + 1, j] != 1:
+        return (i + 1, j)
+
+
+def move_left(i, j):
+    if obs_map[i, j - 1] != 1:
+        return (i, j - 1)
+
+
+def move_right(i, j):
+    if obs_map[i, j + 1] != 1:
+        return (i, j + 1)
+
+
+def move_up_left(i, j):
+    if obs_map[i - 1, j - 1] != 1:
+        return (i - 1, j - 1)
+
+
+def move_up_right(i, j):
+    if obs_map[i - 1, j + 1] != 1:
+        return (i - 1, j + 1)
+
+
+def move_down_left(i, j):
+    if obs_map[i + 1, j - 1] != 1:
+        return (i + 1, j - 1)
+
+
+def move_down_right(i, j):
+    if obs_map[i + 1, j + 1] != 1:
+        return (i + 1, j + 1)
+
+
+def generate_new_moves(state):
+    list_states = []
+    for func in [move_left, move_right, move_down, move_up, move_up_left, move_up_right, move_down_left,
+                 move_down_right]:
+        dum_state = state
+        out_state = func(dum_state[0], dum_state[1])
+        if out_state is not None:
+            list_states.append(out_state)
+    return list_states
 
