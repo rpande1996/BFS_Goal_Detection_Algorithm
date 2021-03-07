@@ -101,4 +101,15 @@ def getPolygonObstacle3(i, j):
     ret_val = (cond1 and cond2 and cond3)
     return ret_val
 
+for i in range(obs_map.shape[0]):
+    for j in range(obs_map.shape[1]):
+        if getCircleObstacle(obs_map.shape[0] - i, j) or getCShapeObstacle(obs_map.shape[0] - i,
+                                                                           j) or getSlantedRectObstacle(
+            obs_map.shape[0] - i, j) or getEllipseObstacle(obs_map.shape[0] - i, j) or getPolygonObstacle(
+            obs_map.shape[0] - i, j) or getPolygonObstacle2(
+            obs_map.shape[0] - i, j) or getPolygonObstacle3(
+            obs_map.shape[0] - i, j):
+            obs_map[i, j] = 1
+
+
 
