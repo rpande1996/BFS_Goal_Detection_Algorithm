@@ -161,3 +161,47 @@ def generate_new_moves(state):
             list_states.append(out_state)
     return list_states
 
+try:
+    start_node_x = int(input('Enter start node x postion: '))
+    if start_node_x < 0:
+        print("Invalid start node x position, setting x postion to 0")
+        start_node_x = 0
+    elif start_node_x > 402:
+        print("Invalid start node x position, setting x postion to 403")
+        start_node_x = 402
+
+    start_node_y = int(input('Enter start node y postion: '))
+    if start_node_y < 0:
+        print("Invalid start node y position, setting y postion to 0")
+        start_node_y = 0
+    elif start_node_y > 302:
+        print("Invalid start node y position, setting y postion to 300")
+        start_node_y = 302
+
+    goal_node_x = int(input('Enter goal node x postion: '))
+    if goal_node_x < 0:
+        print("Invalid goal node x position, setting x postion to 0")
+        goal_node_x = 0
+    elif goal_node_x > 402:
+        print("Invalid goal node x position, setting x postion to 403")
+        start_node_x = 402
+
+    goal_node_y = int(input('Enter goal node y postion: '))
+    if goal_node_y < 0:
+        print("Invalid goal node y position, setting y postion to 0")
+        goal_node_y = 0
+    elif goal_node_y > 302:
+        print("Invalid goal node y position, setting y postion to 300")
+        start_node_y = 302
+
+    if obs_map[obs_map.shape[0] - start_node_y, start_node_x] == 1:
+        print("Error: Start position is in obstacle space. Exiting program")
+        exit(1)
+
+    if obs_map[obs_map.shape[0] - goal_node_y, goal_node_x] == 1:
+        print("Error: Goal position is in obstacle space. Exiting program")
+        exit(1)
+except:
+    print("Error: Invalid Input. Exiting program")
+    exit(2)
+
