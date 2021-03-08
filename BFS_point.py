@@ -1,6 +1,8 @@
 import numpy as np
 import cv2
 
+# Map creation with edges as '1' in order to provide a void border of the map
+
 obs_map = np.zeros((302, 402), dtype=int)
 obs_map[0, :] = 1
 obs_map[301, :] = 1
@@ -9,6 +11,8 @@ obs_map[:, 401] = 1
 
 
 class Queue:
+
+# Creating a class to convert a list into a queue
 
     def __init__(self):
         self.queue = []
@@ -24,8 +28,11 @@ class Queue:
     def __len__(self):
         return len(self.queue)
 
+# Creating a class to determine the node of the iteration. Node is the puzzle state.
 
 class Node:
+
+# Defining the __init__ function
 
     def __init__(self, data, parent, act, cost):
         self.data = data
@@ -34,6 +41,8 @@ class Node:
         self.id = self.get_id()
         self.cost = cost
 
+# Defining a function to generate a unique id of the state of the puzzle.
+
     def get_id(self):
         _id = np.ravel(self.data).tolist()
         _id = [str(item) for item in _id]
@@ -41,14 +50,18 @@ class Node:
         self.id = _id
         return self.id
 
+# Defining the __repr__ function
+
     def __repr__(self):
         return str(self.data)
 
+# Creating a function to define the circle obstacle's area on the map
 
 def getCircleObstacle(i, j):
     cond = ((j - 90) ** 2) + ((i - 70) ** 2) <= 1225
     return cond
 
+# Creating a function to define the C shape obstacle's area on the map
 
 def getCShapeObstacle(i, j):
     cond1 = j >= 200
@@ -62,6 +75,7 @@ def getCShapeObstacle(i, j):
             cond1 and cond5 and cond7 and cond4)
     return ret_val
 
+# Creating a function to define the slanted rectangle obstacle's area on the map
 
 def getSlantedRectObstacle(i, j):
     cond1 = (i) + (1.42814 * j) >= 176.5511
@@ -71,11 +85,14 @@ def getSlantedRectObstacle(i, j):
     ret_val = (cond1 and cond2 and cond3 and cond4)
     return ret_val
 
+# Creating a function to define the ellipseobstacle's area on the map
 
 def getEllipseObstacle(i, j):
     cond = (((j - 246) / 60) ** 2) + (((i - 145) / 30) ** 2) <= 1
     return cond
 
+# Creating a function to define the polygon obstacle's area on the map
+# The Polygon is divided into a rectangle and two triangles
 
 def getPolygonObstacle(i, j):
     cond1 = i + j >= 391
@@ -101,6 +118,7 @@ def getPolygonObstacle3(i, j):
     ret_val = (cond1 and cond2 and cond3)
     return ret_val
 
+# Creating an if-condition to change value of the element in area under all obstacles to '1' in order to create a void in the map
 
 for i in range(obs_map.shape[0]):
     for j in range(obs_map.shape[1]):
@@ -112,46 +130,55 @@ for i in range(obs_map.shape[0]):
             obs_map.shape[0] - i, j):
             obs_map[i, j] = 1
 
+# Defining the move up function where if the element above does not have '1' value, i.e. if there isn't a void in the element above, the object moves up
 
 def move_up(i, j):
     if obs_map[i - 1, j] != 1:
         return (i - 1, j)
 
+# Defining the move down function where if the element below does not have '1' value, i.e. if there isn't a void in the element below, the object moves down
 
 def move_down(i, j):
     if obs_map[i + 1, j] != 1:
         return (i + 1, j)
 
+# Defining the move left function where if the element on the left does not have '1' value, i.e. if there isn't a void in the element on the left, the object moves left
 
 def move_left(i, j):
     if obs_map[i, j - 1] != 1:
         return (i, j - 1)
 
+# Defining the move right function where if the element on the right does not have '1' value, i.e. if there isn't a void in the element on the right, the object moves right
 
 def move_right(i, j):
     if obs_map[i, j + 1] != 1:
         return (i, j + 1)
 
+# Defining the move up left function where if the element above and left does not have '1' value, i.e. if there isn't a void in the element above and left , the object moves up left
 
 def move_up_left(i, j):
     if obs_map[i - 1, j - 1] != 1:
         return (i - 1, j - 1)
 
+# Defining the move up right function where if the element above and right does not have '1' value, i.e. if there isn't a void in the element above and right, the object moves up right
 
 def move_up_right(i, j):
     if obs_map[i - 1, j + 1] != 1:
         return (i - 1, j + 1)
 
+# Defining the move down left function where if the element below and left does not have '1' value, i.e. if there isn't a void in the element below and left, the object moves down left
 
 def move_down_left(i, j):
     if obs_map[i + 1, j - 1] != 1:
         return (i + 1, j - 1)
 
+# Defining the move down right function where if the element below and right does not have '1' value, i.e. if there isn't a void in the element below and right, the object moves down right
 
 def move_down_right(i, j):
     if obs_map[i + 1, j + 1] != 1:
         return (i + 1, j + 1)
 
+# Defining a function to generate new legal moves as per the state
 
 def generate_new_moves(state):
     list_states = []
@@ -163,6 +190,7 @@ def generate_new_moves(state):
             list_states.append(out_state)
     return list_states
 
+# Inputting values from the user and checking if the values are valid by checking the outbound values and in-obstacle values
 
 try:
     start_node_x = int(input('Enter start node x postion: '))
@@ -208,12 +236,16 @@ except:
     print("Error: Invalid Input. Exiting program")
     exit(2)
 
+# Creating the goal state and initial state.
+
 goal_state = (obs_map.shape[0] - goal_node_y, goal_node_x)
 init_state = (obs_map.shape[0] - start_node_y, start_node_x)
 state_queue = Queue()
 state_queue.add(Node(init_state, None, None, None))
 
 visited = []
+
+# Creating a new array in order to write as video
 
 result_map = obs_map.copy()
 result_map = result_map * 255
@@ -223,6 +255,10 @@ height, width = obs_map.shape
 FPS_val = 240
 
 video_save = cv2.VideoWriter("Path-detection.mp4", cv2.VideoWriter_fourcc(*'mp4v'), FPS_val, (width, height))
+
+# While loop to iterate the values inside the array with legal moves.
+# If the current state is same as the goal state then the loop breaks.
+# If the state ID is found in the visited list, then the node is skipped
 
 while True:
     try:
@@ -250,11 +286,17 @@ while True:
 target_node = cur_node
 path = []
 
+# While loop to add a step in the path
+
 while cur_node is not None:
     path.append(cur_node)
     cur_node = cur_node.parent
 
+# Traceback the path
+
 path.reverse()
+
+# Converting the data in path array to BGR values
 
 for item in path:
     result_map[item.data[0], item.data[1], :] = np.asarray((0, 255, 255))
@@ -263,6 +305,8 @@ for item in path:
 
     for _ in range(int(FPS_val / 20)):
         video_save.write(result_map)
+
+# Writing and saving the complete traverse
 
 video_save.write(result_map)
 
