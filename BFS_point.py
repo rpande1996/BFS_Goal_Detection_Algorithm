@@ -101,6 +101,7 @@ def getPolygonObstacle3(i, j):
     ret_val = (cond1 and cond2 and cond3)
     return ret_val
 
+
 for i in range(obs_map.shape[0]):
     for j in range(obs_map.shape[1]):
         if getCircleObstacle(obs_map.shape[0] - i, j) or getCShapeObstacle(obs_map.shape[0] - i,
@@ -110,6 +111,7 @@ for i in range(obs_map.shape[0]):
             obs_map.shape[0] - i, j) or getPolygonObstacle3(
             obs_map.shape[0] - i, j):
             obs_map[i, j] = 1
+
 
 def move_up(i, j):
     if obs_map[i - 1, j] != 1:
@@ -160,6 +162,7 @@ def generate_new_moves(state):
         if out_state is not None:
             list_states.append(out_state)
     return list_states
+
 
 try:
     start_node_x = int(input('Enter start node x postion: '))
@@ -212,6 +215,15 @@ state_queue.add(Node(init_state, None, None, None))
 
 visited = []
 
+result_map = obs_map.copy()
+result_map = result_map * 255
+result_map = np.dstack((result_map, result_map, result_map))
+result_map = result_map.astype(np.uint8)
+height, width = obs_map.shape
+FPS_val = 240
+
+video_save = cv2.VideoWriter("Path-detection.mp4", cv2.VideoWriter_fourcc(*'mp4v'), FPS_val, (width, height))
+
 while True:
     try:
         cur_node = state_queue.pop()
@@ -243,3 +255,20 @@ while cur_node is not None:
     cur_node = cur_node.parent
 
 path.reverse()
+
+for item in path:
+    result_map[item.data[0], item.data[1], :] = np.asarray((0, 255, 255))
+    result_map[result_map.shape[0] - start_node_y, start_node_x, :] = np.asarray((0, 0, 255))
+    result_map[result_map.shape[0] - goal_node_y, goal_node_x, :] = np.asarray((0, 255, 0))
+
+    for _ in range(int(FPS_val / 20)):
+        video_save.write(result_map)
+
+video_save.write(result_map)
+
+video_save and video_save.release()
+cv2.imshow("Path", result_map)
+if cv2.waitKey(0) and 0XFF == ord('q'):
+    exit(0)
+
+cv2.destroyAllWindows()
