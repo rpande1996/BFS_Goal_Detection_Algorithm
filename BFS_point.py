@@ -226,11 +226,11 @@ try:
         start_node_y = 302
 
     if obs_map[obs_map.shape[0] - start_node_y, start_node_x] == 1:
-        print("Error: Start position is in obstacle space. Exiting program")
+        print("Error: Start position is in void space. Exiting program")
         exit(1)
 
     if obs_map[obs_map.shape[0] - goal_node_y, goal_node_x] == 1:
-        print("Error: Goal position is in obstacle space. Exiting program")
+        print("Error: Goal position is in void space. Exiting program")
         exit(1)
 except:
     print("Error: Invalid Input. Exiting program")
