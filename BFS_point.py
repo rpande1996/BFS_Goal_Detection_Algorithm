@@ -205,3 +205,41 @@ except:
     print("Error: Invalid Input. Exiting program")
     exit(2)
 
+goal_state = (obs_map.shape[0] - goal_node_y, goal_node_x)
+init_state = (obs_map.shape[0] - start_node_y, start_node_x)
+state_queue = Queue()
+state_queue.add(Node(init_state, None, None, None))
+
+visited = []
+
+while True:
+    try:
+        cur_node = state_queue.pop()
+    except:
+        if len([node for node in state_queue.queue]) == 0:
+            break
+    if np.all(cur_node.data == goal_state):
+        break
+    if cur_node.id in visited:
+        continue
+    moves = generate_new_moves(cur_node.data)
+    for move in moves:
+        new_node = Node(move, cur_node, None, None)
+        state_queue.add(new_node)
+    visited.append(cur_node.id)
+
+    result_map[cur_node.data[0], cur_node.data[1], :] = np.asarray((255, 0, 0))
+
+    result_map[result_map.shape[0] - start_node_y, start_node_x, :] = np.asarray((0, 0, 255))
+    result_map[result_map.shape[0] - goal_node_y, goal_node_x, :] = np.asarray((0, 255, 0))
+
+    video_save.write(result_map)
+
+target_node = cur_node
+path = []
+
+while cur_node is not None:
+    path.append(cur_node)
+    cur_node = cur_node.parent
+
+path.reverse()
