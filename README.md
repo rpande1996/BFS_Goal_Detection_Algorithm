@@ -12,3 +12,13 @@ Steps:
 
 Please note: The FPS has been set for a far away start and goal points. Please change the FPS values located at line 255 in the code
              to 60 for closer start and goal points
+           
+# Libraries installed
+
+1. Numpy
+2. OpenCV
+
+# Software Recommended
+
+1. PyCharm as IDE
+2. Python 3.7
